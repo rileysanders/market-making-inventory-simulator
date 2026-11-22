@@ -1,0 +1,12 @@
+{
+  "trials": 2000,
+  "steps": 250,
+  "seed": 20261121,
+  "initial_mid_cents": 10000.0,
+  "price_shock_sd_cents": 5.0,
+  "spread_cents": 20.0,
+  "fill_scale": 0.55,
+  "fill_decay_per_cent": 0.14,
+  "inventory_limit": 6,
+  "inventory_skew_cents": 1.0
+}
