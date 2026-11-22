@@ -1,0 +1,3 @@
+policy,mean_pnl_dollars,pnl_sd_dollars,fifth_percentile_pnl_dollars,mean_max_abs_inventory,mean_trades
+fixed spread,6.406,2.767,1.685,5.704,64.576
+inventory aware,6.665,1.533,4.23,4.066,70.067
