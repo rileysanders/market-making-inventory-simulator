@@ -4,3 +4,6 @@ __pycache__/
 venv/
 .pytest_cache/
 .DS_Store
+
+# Historical vendor order-book downloads stay local (never distribute raw data).
+data/
