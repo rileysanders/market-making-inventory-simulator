@@ -37,7 +37,7 @@ At 1.0¢ skew:
 
 These are approximate normal confidence intervals based on the **paired difference over 2,000 Monte Carlo runs**. They quantify sampling variation under the simulated data-generating process, not uncertainty about the actual market or parameter selection. Reusing the same seed for parameter sweeps yields dependent scenario estimates.
 
-## Interpretation
+## Visualizations\n\n![Mean P&L sensitivity](results/sensitivity/mean_delta_by_skew.svg)\n\n![Downside sensitivity](results/sensitivity/tail_pnl_by_skew.svg)\n\n## Interpretation
 
 The inventory-aware policy lowered P&L dispersion, downside exposure, and inventory extremes in these settings. Its estimated mean P&L was slightly higher, but at 15¢ and 30¢ volatility the confidence intervals for the mean *difference* overlap zero. It would be misleading to say that the profit improvement is demonstrated in those settings. At higher volatility, simulated mark-to-market inventory risk becomes much more substantial.
 
