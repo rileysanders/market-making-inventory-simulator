@@ -1,0 +1,5 @@
+policy,fill_assumption,executed_shares,eligible_prints,ending_inventory,peak_abs_inventory,gross_pnl_usd,net_pnl_usd
+fixed quotes,touch,12833,23658,5,6,-36.105,-74.604
+inventory aware,touch,5504,5504,0,1,-25.48,-41.992
+fixed quotes,through,0,0,0,0,0.0,0.0
+inventory aware,through,0,0,0,0,0.0,0.0
