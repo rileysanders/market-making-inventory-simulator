@@ -1,12 +1,47 @@
 # Experiment 4: historical AAPL order-book replay
 
-**Status (23 November 2026): the code and synthetic fixtures have been tested; the full real AAPL sample has NOT yet been executed and independently verified in the development environment. There is intentionally no claimed historical P&L result in this repository.** Running the sample produces genuine historical *observations* and separately labelled hypothetical execution scenarios.
+**Status (23 November 2026): Successfully executed on the complete LOBSTER AAPL Level-1 historical sample in GitHub Actions. 118,497 recorded events were loaded; all 20 Python unit tests passed. Verified derived outputs are checked into this repository. These figures are still hypothetical strategy replays, NOT validated historical executions or a real trading track record.** Running the sample produces genuine historical *observations* and separately labelled hypothetical execution scenarios.
 
 ## Research question
 
 Would the earlier fixed-quote and inventory-aware market-making policies behave differently when exposed to **recorded Nasdaq AAPL order events and displayed best quotes** rather than generated price moves?
 
 This is a first real-data replay, not a validated executable market-making backtest.
+
+## Verified run and numerical results (23 November 2026)
+
+[GitHub Actions successful source run](https://github.com/rileysanders/market-making-inventory-simulator/actions/runs/45173977177) and [downloadable summary artifact](https://github.com/rileysanders/market-making-inventory-simulator/actions/runs/45173977177/artifacts).
+
+**Recorded data processed:** 118,497 LOBSTER AAPL Level-1 events; first timestamp 34200.004241176 and last 57599.913117637 seconds after midnight (09:30 to 16:00 Eastern time). The raw vendor data was downloaded by the GitHub runner directly from the official provider URL, then read as paired message and post-event order-book records.
+
+### Historical executed-trade markouts — observations, not hypothetical orders
+
+| Horizon | Eligible actual visible executions | Executed shares | Passive execution-price markout per share | Signed post-trade midpoint move per share |
+|---|---:|---:|---:|---:|
+| 1 second | 23,646 | 1,845,152 | +$0.003027 | −$0.046534 |
+| 5 seconds | 23,628 | 1,842,613 | −$0.005443 | −$0.055034 |
+
+The observed execution-price markout measures the passive trader's price against a later midpoint. At 1 second, the volume-weighted observation is a +0.3027-cent advantage per executed share; at 5 seconds it is a −0.5443-cent disadvantage. The separate midpoint-move metric measures the direction of subsequent midpoint changes relative to the preceding midpoint (not an order fill or a P&L forecast).
+
+### Historical quote replay — hypothetical fills only
+
+| Policy | Assumed fill rule | Hypothetical shares traded | Peak absolute inventory | Gross P&L | Net P&L after illustrative fees |
+|---|---|---:|---:|---:|---:|
+| Fixed | Touch | 12,833 | 6 | −$36.105 | **−$74.604** |
+| Inventory-aware | Touch | 5,504 | 1 | −$25.480 | **−$41.992** |
+| Fixed | Trade-through | 0 | 0 | $0 | $0 |
+| Inventory-aware | Trade-through | 0 | 0 | $0 | $0 |
+
+Net P&L subtracts a **0.3 US-cent fee per hypothetical trade**. Under optimistic **touch fills**, inventory awareness lost **$32.612 less** than fixed quotes, but both net results were negative. The inventory-aware policy quoted more conservatively, executed fewer trades, and reached only a 1-share peak inventory. The strategies do **not** use identical quote adjustment rules to the earlier synthetic experiments.
+
+**Crucial methodological finding:** The stricter **trade-through assumption produces no qualifying executions** in this dataset using these particular rules. Its $0 P&L is a no-trade outcome, **not** evidence of a profitable zero-risk strategy. Zero executions reveal this replay's lack of useful sensitivity coverage at strict fill assumptions and the need for a calibrated execution/queue model. Touch fills are optimistic and cannot establish realizable execution counts.
+
+Verified derived files:
+- [run_info.json](results/aapl/run_info.json)
+- [observed_markouts.csv](results/aapl/observed_markouts.csv)
+- [policy_replay.csv](results/aapl/policy_replay.csv)
+
+**No annualised return, Sharpe ratio or statistical significance is claimed** from this single historical session and uncalibrated hypothetical fill model.
 
 ## Historical data
 
@@ -98,7 +133,7 @@ One **historical trading day** is not enough to establish expected returns or an
 
 ## Reproducibility and next steps
 
-The real AAPL replay was not run in the environment authoring this update because the provider archive couldn't be retrieved there. To publish quantitative claims, first run the script on the complete local vendor ZIP, check event counts and any anomalous prices, review the generated outputs, and upload the summary-only files or send them for analysis.
+The complete historical sample was successfully downloaded and processed in GitHub Actions (run 45173977177); the console outputs and uploaded summary artifact were independently inspected and matched the derived CSV and JSON files committed above. The execution conclusions remain speculative because this is a counterfactual replay with unvalidated fills.
 
 Afterward, investigate actual markouts by buy/sell direction and spread; add queue-size models; compare market conditions across multiple independent days; and test with chronologically held-out market data.
 
