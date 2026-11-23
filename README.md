@@ -13,6 +13,28 @@ A reproducible, **AI-assisted educational project** investigating whether invent
 | **1. Original quoting simulator** | Does inventory-sensitive quoting change P&L and exposure under simple order arrivals? | [Initial results](results/summary.csv) |
 | **2. Volatility × skew sweep** | Does the effect depend on market volatility and how aggressively quotes adjust? | [Research notes](RESEARCH_NOTES.md) · [CSV](results/sensitivity/sensitivity.csv) |
 | **3. Fees + adverse selection** | Does the original advantage survive trading costs and adverse price moves following aggressive customer flow? | **[Research note](FRICTION_STUDY.md)** · [CSV](results/frictions/friction_grid.csv) |
+| **4. Historical AAPL order-book replay (new)** | What happens when we replace imaginary prices and order flow with recorded Nasdaq AAPL events? | **[Replay code](aapl_replay.py)** · [Methodology and status](AAPL_HISTORICAL_STUDY.md) |
+
+### Experiment 4 — AAPL on historical Nasdaq order-book data
+
+The newest module, [`aapl_replay.py`](aapl_replay.py), reads the **LOBSTER AAPL Level-1 historical sample from 21 June 2012** (real recorded Nasdaq order events and best quotes). It measures observed historical post-execution markouts separately from **hypothetical** fixed-quote and inventory-aware policy replays.
+
+- Uses the **previous** order-book snapshot for decisions, avoiding future-book lookahead.
+- Compares an optimistic same-price **touch** fill rule against a stricter **trade-through** rule to illustrate execution uncertainty.
+- Records illustrative execution fees, P&L, inventory and observed 1-second / 5-second markouts.
+- Includes reproducibility tests and a GitHub Actions workflow. Raw market data stays outside the public repository.
+
+**Evidence status:** The code passed synthetic fixture tests, but the complete vendor AAPL sample has **not yet been successfully executed and its resulting P&L verified in the development environment**. We make **no claim of historical profitability** until those results exist and are reviewed.
+
+Full method, data sources and limitations: **[AAPL Historical Study](AAPL_HISTORICAL_STUDY.md)**.
+
+On Windows, after downloading the latest repository ZIP, open Command Prompt in the project folder and run:
+
+```cmd
+python aapl_replay.py --download --output results\aapl
+```
+
+This downloads the sample locally if accessible, generates `observed_markouts.csv`, `policy_replay.csv` and a chart, and prints the results. If the download cannot be accessed automatically, the research note explains manual installation.
 
 ### Latest finding: the apparent profit advantage is fragile
 
