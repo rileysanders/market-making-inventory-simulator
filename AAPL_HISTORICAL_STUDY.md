@@ -25,7 +25,7 @@ The raw vendor data remains on your computer in `data/`, **not redistributed in 
 
 ## How to run on Windows, without VS Code
 
-1. Download a fresh ZIP of this GitHub project and extract it.
+1. Download a fresh ZIP of this GitHub project and extract it. **Easiest option:** double-click `run_aapl_windows.bat` in the extracted folder; it runs the same command and opens the graph if available.
 2. In File Explorer, open the folder containing `aapl_replay.py`. Press **Ctrl+L**, type **cmd**, press Enter.
 3. Run:
 
