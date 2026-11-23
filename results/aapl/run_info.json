@@ -1,0 +1,11 @@
+{
+  "source": "LOBSTER NASDAQ Historical TotalView-ITCH sample",
+  "ticker": "AAPL",
+  "date": "2012-06-21",
+  "events": 118497,
+  "first_timestamp_seconds": 34200.004241176,
+  "last_timestamp_seconds": 57599.913117637,
+  "fee_cents_per_fill": 0.3,
+  "source_data_in_repository": false,
+  "note": "Actual observed trades and quotes; simulated hypothetical fills only."
+}
