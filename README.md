@@ -4,6 +4,17 @@ A reproducible, **synthetic** Python experiment comparing fixed bid–ask quotes
 
 **Status:** Working introductory prototype (November 2026).
 
+## New: volatility and inventory-skew sensitivity research (November 2026)
+
+The extended experiment tests 12 volatility/skew settings (2,000 synthetic paths per setting), with paired policy comparisons, downside-risk metrics, and approximate 95% Monte Carlo confidence intervals. It found lower simulated inventory risk with inventory-aware quotes, but a mean-profit advantage is not statistically clear at the higher volatility levels.
+
+- **[Read research notes and interpretation](RESEARCH_NOTES.md)**
+- **[Download the scenario-results CSV](results/sensitivity/sensitivity.csv)**
+- Run locally with `python sensitivity.py --output results/sensitivity`.
+- This script generates two comparison charts locally when matplotlib is installed.
+
+**Status:** This is a validated reproducible toy simulation, **not** a real-market backtest, and has no claim of live trading performance.
+
 ## Research question
 
 Does shifting both sides of a dealer's quote in response to inventory change simulated profitability, downside risk and maximum inventory relative to keeping quotes symmetric around the mid-price?
