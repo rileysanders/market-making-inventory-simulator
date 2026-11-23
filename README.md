@@ -1,77 +1,105 @@
 # Market-Making Inventory Simulator
 
-A reproducible, **synthetic** Python experiment comparing fixed bid–ask quotes with inventory-aware quotes. This is a learning project, not a live trading system, historical backtest, or demonstration of a profitable real-world strategy.
+**Python | Monte Carlo simulation | Market microstructure | Risk analysis**
 
-**Status:** Working introductory prototype (November 2026).
+A reproducible, **AI-assisted educational project** investigating whether inventory-aware bid–ask quotes change a market maker's profit distribution and inventory risk. The study compares fixed quotes against quotes adjusted for the dealer's current inventory.
 
-## New: volatility and inventory-skew sensitivity research (November 2026)
+> **This is a synthetic, deliberately simplified model.** It is not historical backtesting, live trading, or proof that a real-world strategy is profitable.
 
-The extended experiment tests 12 volatility/skew settings (2,000 synthetic paths per setting), with paired policy comparisons, downside-risk metrics, and approximate 95% Monte Carlo confidence intervals. It found lower simulated inventory risk with inventory-aware quotes, but a mean-profit advantage is not statistically clear at the higher volatility levels.
+## Research at a glance
 
-- **[Read research notes and interpretation](RESEARCH_NOTES.md)**
-- **[Download the scenario-results CSV](results/sensitivity/sensitivity.csv)**
-- [View mean-P&L sensitivity chart](results/sensitivity/mean_delta_by_skew.svg) and [downside sensitivity chart](results/sensitivity/tail_pnl_by_skew.svg).\n- Run locally with `python sensitivity.py --output results/sensitivity`.
-- This script generates two comparison charts locally when matplotlib is installed.
+| Experiment | Research question | Results |
+|---|---|---|
+| **1. Original quoting simulator** | Does inventory-sensitive quoting change P&L and exposure under simple order arrivals? | [Initial results](results/summary.csv) |
+| **2. Volatility × skew sweep** | Does the effect depend on market volatility and how aggressively quotes adjust? | [Research notes](RESEARCH_NOTES.md) · [CSV](results/sensitivity/sensitivity.csv) |
+| **3. Fees + adverse selection** | Does the original advantage survive trading costs and adverse price moves following aggressive customer flow? | **[Research note](FRICTION_STUDY.md)** · [CSV](results/frictions/friction_grid.csv) |
 
-**Status:** This is a validated reproducible toy simulation, **not** a real-market backtest, and has no claim of live trading performance.
+### Latest finding: the apparent profit advantage is fragile
 
-![Mean P&L by skew and volatility](results/sensitivity/mean_delta_by_skew.svg)\n\n![Downside P&L by skew and volatility](results/sensitivity/tail_pnl_by_skew.svg)\n\n## Research question
+Adding per-trade fees and a simple adverse-selection mechanism reduced simulated net earnings and sometimes reversed the performance ranking. Higher inventory-adjustment intensity can reduce inventory risk **without** increasing net expected profit.
 
-Does shifting both sides of a dealer's quote in response to inventory change simulated profitability, downside risk and maximum inventory relative to keeping quotes symmetric around the mid-price?
+![Average net P&L under adverse selection](results/frictions/net_pnl_vs_adverse.svg)
 
-## Method
+For example, with 4¢ per-share execution fees and a 20¢ adverse move associated with selected synthetic order opportunities, both strategies had negative **mean simulated P&L**:
 
-Each policy trades in **2,000 paired synthetic price/order paths**, with **250 steps per path**. Both policies are evaluated on identical random price shocks and order draws, so comparisons are less affected by differences in simulated market conditions.
+| Policy | Average net P&L per path | 5th-percentile net P&L |
+|---|---:|---:|
+| Fixed quotes | -$2.755 | -$18.652 |
+| Inventory-aware | -$3.098 | -$11.279 |
 
-- **Fixed quotes:** a bid and ask at a constant spread around the synthetic mid-price.
-- **Inventory-aware quotes:** lower both quotes when inventory is positive, and raise them when inventory is negative, to encourage fills that reduce exposure.
-- Order fill probability falls with the quote's distance from mid. Inventory is capped at six units.
-- Ending P&L combines cash from executed simulated trades and the remaining inventory marked at the final mid-price.
+This is **not a prediction** of real trading results. Every fee, adverse move and order-arrival rate is hypothetical. The inventory-aware policy has worse mean net profit here but less severe downside in the model.
 
-The random price process has zero expected drift and does **not** link price changes to customer order flow. That is a major simplification.
+### Earlier volatility sensitivity
 
-## Reproduce the experiment
+![Mean P&L advantage under skew and volatility](results/sensitivity/mean_delta_by_skew.svg)
 
-Requires Python 3.10+; simulation and tests need no third-party packages:
+![Downside P&L under skew and volatility](results/sensitivity/tail_pnl_by_skew.svg)
 
-```bash
-python simulate.py --output results
+## Model overview
+
+1. Draw synthetic mid-price shocks and customer order opportunities.
+2. Quote a bid and ask around the mid-price.
+3. Compare **fixed quotes** with **inventory-aware quotes** that move lower when the dealer owns more shares and higher when short.
+4. Record simulated fills, cash and the outstanding inventory, marked at the final mid-price.
+5. Compare P&L distributions, extreme inventory, downside outcomes and **paired** policy differences.
+
+Both policies see the same generated market/order opportunities *within each scenario*. Which orders actually fill may differ because the quotes differ.
+
+In Experiment 3, a small subset of synthetic buy/sell opportunities is **associated by construction** with a later price movement in the direction unfavourable to a market maker. This represents a toy **adverse-selection proxy**, not empirical calibration or price impact caused by the dealer.
+
+## Run on Windows (Notepad + Command Prompt works)
+
+Install Python **3.10 or later** and open Command Prompt in the folder containing `simulate.py`.
+
+```cmd
+python -m pip install -r requirements-plot.txt
 python -m unittest discover -s tests -v
 ```
 
-Optional chart output:
+Run the original version:
 
-```bash
-python -m pip install -r requirements-plot.txt
-python simulate.py --output results
+```cmd
+python simulate.py --output results\original
 ```
 
-The experiment writes `results/summary.csv`, `results/settings.json`, and (when matplotlib is installed) `results/pnl_distribution.png`. A reference PNG is supplied in the original project archive but must be added separately to GitHub; running the script recreates it.
+Run the volatility/skew sensitivity experiment:
 
-## Seeded example: 2,000 synthetic paths
+```cmd
+python sensitivity.py --output results\sensitivity
+```
 
-| Policy | Mean P&L | P&L standard deviation | 5th percentile P&L | Mean max. absolute inventory | Mean trades |
-|---|---:|---:|---:|---:|---:|
-| Fixed quotes | $6.406 | $2.767 | $1.685 | 5.704 | 64.576 |
-| Inventory-aware | $6.665 | $1.533 | $4.230 | 4.066 | 70.067 |
+Run the **new fees + adverse-selection experiment**:
 
-The inventory-aware policy showed slightly higher mean simulated P&L, lower P&L dispersion and lower maximum inventory **under these particular assumptions**. These P&L numbers are in illustrative US dollars per simulated path, not percentage investment returns. They do not establish expected real-world earnings or statistical significance.
+```cmd
+python friction_study.py --output results\frictions
+```
 
-## Important limitations
+Example with custom assumptions:
 
-This toy order-arrival rule is not calibrated to exchange data. It excludes adverse selection, queue position, latency, fees, market impact and volatility clustering. Both policies receive the same random draws, but **not necessarily identical executed trades** since their quotes differ. The model also assumes immediate fills when its artificial order rule triggers. Outcomes may change materially under different assumptions.
+```cmd
+python friction_study.py --fees 0,2,6 --adverse-moves 0,5,15 --trials 3000 --output results\my_experiment
+```
 
-## Next experiments
+The study writes a CSV of summary results and (if matplotlib is installed) a PNG plot. All simulation and unit-test logic otherwise uses the Python standard library.
 
-1. Vary inventory-skew strength, spreads, volatility, order-arrival rates and inventory limits.
-2. Measure the **paired per-path P&L differences** and their uncertainty, not just the two separate distributions.
-3. Test an order-flow / price-impact model with adverse selection and transaction costs.
-4. Write a short research note explaining conditions under which inventory skew helps, hurts or has no discernible effect.
+## Methodological cautions
 
-## Interview summary
+- Customer arrivals are synthetic, not calibrated to limit-order-book data.
+- Orders, adverse price signals and fills are simplified. No queue position, latency, actual hedging, market impact, spread dynamics or volatility clustering.
+- **Transaction fees are fixed per fill**, with no jurisdiction-, venue- or product-specific calibration.
+- Confidence intervals describe **Monte Carlo sampling error within the toy model**, not uncertainty about real markets or whether the model is economically correct.
+- Different parameter combinations reuse a common random seed; they are not independent trials.
+- An attractive simulated result does not establish a profitable executable strategy.
 
-"I built an AI-assisted Python prototype to compare fixed and inventory-aware quotes in a simplified market-making simulation. I used identical synthetic price and order random draws across 2,000 paths, then compared terminal marked-to-mid P&L and inventory risk. My initial result favoured inventory-aware quoting under the toy assumptions, but this isn't historical evidence or a live trading claim. My next step is to stress-test the model under more realistic order flow."
+See the full [fees and adverse-selection study](FRICTION_STUDY.md) for exact assumptions, test design and limitations.
+
+## What I would improve next
+
+1. Vary the toxic-order threshold instead of treating it as known.
+2. Calibrate realistic customer order-flow and fees, where possible, using a documented data source.
+3. Model queue dynamics, adverse selection and spread changes more realistically.
+4. Run parameter robustness and out-of-sample validation before drawing economic conclusions.
 
 ## Attribution
 
-Developed with AI assistance. The code, assumptions, results and limitations are exposed for review; prospective users should run and independently validate the experiment before drawing conclusions.
+Developed with **AI assistance**. The simulator, tests, model assumptions and saved outputs are provided transparently so others can reproduce and scrutinise the results. No real transactions were made.
