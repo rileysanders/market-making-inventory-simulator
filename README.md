@@ -10,12 +10,12 @@ The extended experiment tests 12 volatility/skew settings (2,000 synthetic paths
 
 - **[Read research notes and interpretation](RESEARCH_NOTES.md)**
 - **[Download the scenario-results CSV](results/sensitivity/sensitivity.csv)**
-- Run locally with `python sensitivity.py --output results/sensitivity`.
+- [View mean-P&L sensitivity chart](results/sensitivity/mean_delta_by_skew.svg) and [downside sensitivity chart](results/sensitivity/tail_pnl_by_skew.svg).\n- Run locally with `python sensitivity.py --output results/sensitivity`.
 - This script generates two comparison charts locally when matplotlib is installed.
 
 **Status:** This is a validated reproducible toy simulation, **not** a real-market backtest, and has no claim of live trading performance.
 
-## Research question
+![Mean P&L by skew and volatility](results/sensitivity/mean_delta_by_skew.svg)\n\n![Downside P&L by skew and volatility](results/sensitivity/tail_pnl_by_skew.svg)\n\n## Research question
 
 Does shifting both sides of a dealer's quote in response to inventory change simulated profitability, downside risk and maximum inventory relative to keeping quotes symmetric around the mid-price?
 
