@@ -1,0 +1,38 @@
+name: AAPL historical order-book replay
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "aapl_replay.py"
+      - "tests/test_aapl_replay.py"
+      - ".github/workflows/aapl-historical-replay.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run all Python unit tests
+        run: python -m unittest discover -s tests -v
+      - name: Download AAPL vendor sample and run historical replay
+        run: python aapl_replay.py --download --output results/aapl
+      - name: Upload summary-only outputs
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aapl-historical-replay-summary
+          path: |
+            results/aapl/run_info.json
+            results/aapl/observed_markouts.csv
+            results/aapl/policy_replay.csv
+          retention-days: 30
