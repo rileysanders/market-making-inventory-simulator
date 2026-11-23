@@ -24,7 +24,13 @@ The newest module, [`aapl_replay.py`](aapl_replay.py), reads the **LOBSTER AAPL 
 - Records illustrative execution fees, P&L, inventory and observed 1-second / 5-second markouts.
 - Includes reproducibility tests and a GitHub Actions workflow. Raw market data stays outside the public repository.
 
-**Evidence status:** The code passed synthetic fixture tests, but the complete vendor AAPL sample has **not yet been successfully executed and its resulting P&L verified in the development environment**. We make **no claim of historical profitability** until those results exist and are reviewed.
+**Evidence status: verified historical-data replay.** On 23 November 2026, a [successful GitHub Actions run](https://github.com/rileysanders/market-making-inventory-simulator/actions/runs/45173977177) downloaded and processed **118,497 actual recorded AAPL order-book events**; all 20 Python unit tests passed.
+
+Under the **optimistic touch-fill assumption** with an illustrative fee of **0.3¢ per filled share**, both hypothetical strategies lost money: fixed quotes **−$74.604** net (12,833 assumed fills), inventory-aware **−$41.992** net (5,504 assumed fills). The inventory-aware policy reduced the hypothetical loss by **$32.612** while holding smaller inventory. Under the stricter **trade-through assumption**, **neither strategy qualified for any fills**, so its $0 P&L cannot be interpreted as a trading success.
+
+The historical tape's observable execution-price markouts were **+$0.003027/share after one second** and **−$0.005443/share after five seconds** on a volume-weighted basis. **Actual recorded historical trades and hypothetical policy fills are fundamentally different.** A single day's counterfactual execution model does **not** establish realizable trading profit or out-of-sample performance.
+
+[View verified derived results (CSV and JSON)](results/aapl/) · [Full methodology and limitations](AAPL_HISTORICAL_STUDY.md).
 
 Full method, data sources and limitations: **[AAPL Historical Study](AAPL_HISTORICAL_STUDY.md)**.
 
