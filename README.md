@@ -28,7 +28,7 @@ The newest module, [`aapl_replay.py`](aapl_replay.py), reads the **LOBSTER AAPL 
 
 Full method, data sources and limitations: **[AAPL Historical Study](AAPL_HISTORICAL_STUDY.md)**.
 
-On Windows, after downloading the latest repository ZIP, open Command Prompt in the project folder and run:
+On Windows, after downloading and extracting the latest repository ZIP, you can **double-click [`run_aapl_windows.bat`](run_aapl_windows.bat)** to run this experiment, or open Command Prompt in the project folder and run:
 
 ```cmd
 python aapl_replay.py --download --output results\aapl
