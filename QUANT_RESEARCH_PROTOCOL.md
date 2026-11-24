@@ -82,6 +82,14 @@ Any positive net hypothetical outcome is a **model output**, not an observed pro
 3. **Counterfactual:** our order queue position, order arrival time, fills, fees, inventory, drawdowns and hypothetical P&L.
 4. **Unproven:** strategy expected profitability, exchange match rates, market impact and out-of-sample economic value.
 
+## Related literature and methodological differences
+
+- **Avellaneda, M. & Stoikov, S. (2008), "High-frequency trading in a limit order book", Quantitative Finance.** [Publisher / DOI](https://doi.org/10.1080/14697680701381228). Introduces inventory-aware market-making control using reservation prices and optimal spread choices. **Our fixed one-tick inventory quote retreat is a teaching-oriented heuristic, not a calibrated or numerically solved Avellaneda–Stoikov optimal policy.**
+- **Cont, R., Stoikov, S. & Talreja, R. (2010), "A Stochastic Model for Order Book Dynamics", Operations Research.** [Publisher / DOI](https://doi.org/10.1287/opre.1090.0780). Motivates the importance of limit-order arrivals, cancellations, execution priority and book-state-dependent fills. **Our replay uses actual event tapes, but approximates hypothetical queue priority rather than fitting the authors' stochastic order-book model.**
+- **Gould, M. D. et al. (2013), "Limit order books", Quantitative Finance.** [Publisher / DOI](https://doi.org/10.1080/14697688.2013.803148). A review of market-microstructure data, order-book dynamics and empirical modelling issues. **Our one-venue, seven-date experiment is a narrow illustrative study rather than a comprehensive cross-venue evaluation.**
+
+The related work supports *which mechanisms are worth measuring*, not the accuracy of this simulator's assumed execution model or any implied profitability.
+
 ## Required gates before making stronger claims
 
 1. Successful complete run of each of the seven verified public dates; report any failures.
