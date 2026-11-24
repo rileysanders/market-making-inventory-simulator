@@ -1,0 +1,42 @@
+name: Five-stock LOBSTER historical cross section
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "cross_stock_replay.py"
+      - ".github/workflows/cross-stock-study.yml"
+permissions:
+  contents: read
+jobs:
+  cross-asset-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run all automated unit tests
+        run: python -m unittest discover -s tests -v
+      - name: Obtain five official free Nasdaq-derived LOBSTER stock samples
+        run: python -u cross_stock_replay.py --download --output results/cross_stocks
+      - name: Verify source contains exactly one historical date and five tickers
+        shell: python
+        run: |
+          import json, csv
+          from pathlib import Path
+          root=Path("results/cross_stocks")
+          p=json.loads((root/"provenance.json").read_text())
+          assert len(p["distinct_dates"]) == 1
+          assert len(p["distinct_stocks"]) == 5
+          rows=list(csv.DictReader((root/"five_stock_queue_results.csv").open()))
+          assert len(rows) == 30
+          assert set(r["ticker"] for r in rows)==set(p["distinct_stocks"])
+          print("5 symbols x 6 scenarios = 30 summary rows; ONE historical date")
+      - name: Upload derived cross-sectional results only
+        uses: actions/upload-artifact@v4
+        with:
+          name: lobster-five-stocks-single-date
+          path: |
+            results/cross_stocks/five_stock_queue_results.csv
+            results/cross_stocks/provenance.json
