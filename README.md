@@ -38,6 +38,14 @@ Nasdaq provides **seven distinct publicly accessible full-day TotalView-ITCH 5.0
 
 [Official Nasdaq ITCH sample collection](https://emi.nasdaq.com/ITCH/) · [Nasdaq binary feed specification](https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/NQTVITCHSpecification_5.0.pdf).
 
+## Completed: five-stock robustness on original historical date
+
+A **[separate, verified cross-sectional study](CROSS_ASSET_RESULTS.md)** applied the same one-day LOBSTER Level-5 queue model to **AAPL, AMZN, GOOG, INTC and MSFT** on 21 June 2012. **All five have real order-book events, but they are NOT five independent trading dates.** Inventory-aware quoting reduced time-weighted absolute inventory for all five instruments; its hypothetical P&L advantage depended on the stock, and some scenarios lost money.
+
+![Five-stock queue sensitivity](results/cross_stocks/stock_pnl.svg)
+
+[Conservative scenario results CSV](results/cross_stocks/summary_conservative.csv) · [Full findings and execution caveats](CROSS_ASSET_RESULTS.md) · [Successful automated run](https://github.com/rileysanders/market-making-inventory-simulator/actions/runs/45325240016).
+
 ## Latest: AAPL depth-aware queue replay and multi-day research framework
 
 **[Experiment 5 research report and verified results](QUEUE_RESULTS.md)** · **[Advanced methodology](ADVANCED_QUEUE_STUDY.md)** · **[Results CSV](results/queue_replay/queue_sensitivity.csv)**
