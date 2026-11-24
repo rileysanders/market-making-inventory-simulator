@@ -1,0 +1,36 @@
+name: Queue-aware AAPL historical experiment
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "queue_replay.py"
+      - "multi_day_research.py"
+      - "tests/test_queue_research.py"
+      - ".github/workflows/queue-aware-aapl.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  queue-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run full deterministic unit test suite
+        run: python -m unittest discover -s tests -v
+      - name: Execute official historical AAPL Level-5 sample with queue estimates
+        run: python queue_replay.py --download --output results/queue_replay
+      - name: Upload reproducible derived summaries only
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aapl-depth-aware-queue-results
+          path: |
+            results/queue_replay/queue_sensitivity.csv
+            results/queue_replay/run_info.json
+          retention-days: 30
