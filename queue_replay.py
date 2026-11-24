@@ -280,11 +280,11 @@ class QueueAgent:
         )
 
 
-def run_day(path: Path, configurations: list[Config], depth: int = 5) -> list[dict[str, object]]:
+def run_day(path: Path, configurations: list[Config], depth: int = 5, day_override: str | None = None) -> list[dict[str, object]]:
     if not configurations:
         raise ValueError("No strategies specified")
     date_match = re.search(r"(20\d\d-\d\d-\d\d)", str(path))
-    day = date_match.group(1) if date_match else path.stem
+    day = day_override or (date_match.group(1) if date_match else path.stem)
     agents = [QueueAgent(cfg) for cfg in configurations]
     previous: Event | None = None
     count = 0
