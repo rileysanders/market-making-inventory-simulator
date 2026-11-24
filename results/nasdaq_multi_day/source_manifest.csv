@@ -1,0 +1,8 @@
+date,source,all_feed_messages,aapl_rth_events,order_fills_hypothetical
+01302019,https://emi.nasdaq.com/ITCH/Nasdaq%20ITCH/01302019.NASDAQ_ITCH50.gz,368366634,1586525,True
+03272019,https://emi.nasdaq.com/ITCH/Nasdaq%20ITCH/03272019.NASDAQ_ITCH50.gz,422264305,1953937,True
+07302019,https://emi.nasdaq.com/ITCH/Nasdaq%20ITCH/07302019.NASDAQ_ITCH50.gz,282229684,1206472,True
+08302019,https://emi.nasdaq.com/ITCH/Nasdaq%20ITCH/08302019.NASDAQ_ITCH50.gz,310317357,1141332,True
+10302019,https://emi.nasdaq.com/ITCH/Nasdaq%20ITCH/10302019.NASDAQ_ITCH50.gz,293989079,727347,True
+12302019,https://emi.nasdaq.com/ITCH/Nasdaq%20ITCH/12302019.NASDAQ_ITCH50.gz,268744780,1477242,True
+01302020,https://emi.nasdaq.com/ITCH/Nasdaq%20ITCH/01302020.NASDAQ_ITCH50.gz,423285709,1942489,True
