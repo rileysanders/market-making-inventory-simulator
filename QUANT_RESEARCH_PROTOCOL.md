@@ -2,7 +2,7 @@
 
 ## Status and scientific claim boundary
 
-**Research status:** 24 November 2026. Experimental Python code, historical single-day LOBSTER results, automated unit tests and reproducible workflows exist. A new Nasdaq 2019–2020 *seven different date* evaluation has been launched, but its numerical results **must not be interpreted as verified until the GitHub workflow succeeds and the summary artifact is inspected**.
+**Research status, verified 24 November 2026:** All **seven different historical Nasdaq 2019–2020 dates** have been decoded and evaluated, and the combined CSV/JSON outputs plus source manifest have been checked. [Completed run](https://github.com/rileysanders/market-making-inventory-simulator/actions/runs/45324827552) · [Final empirical findings](NASDAQ_MULTI_DAY_RESULTS.md). The code has 42 passing automated tests on Python 3.10 and 3.12. Those model results remain hypothetical, not validated exchange fills.
 
 This is an AI-assisted **research simulator**, not an exchange-validated backtester, executable trading system or proven investment strategy. Our candidate quote and queue fills remain **hypothetical** even when all underlying market orders and quotes originate from actual exchange records.
 
