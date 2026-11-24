@@ -175,8 +175,6 @@ class QueueAgent:
         if self.last_ts is not None:
             self.integral_inventory += max(0, event.ts - self.last_ts) * abs(self.inventory)
         self.last_ts = event.ts
-        if pre is not None and pre.valid() and event.ts >= self.next_refresh:
-            self.refresh(pre, event.ts)
         for attr, side in (("bid", 1), ("ask", -1)):
             quote = getattr(self, attr)
             if quote is None or event.ts < quote.live_after:
@@ -216,6 +214,10 @@ class QueueAgent:
         equity = self.cash_raw + self.inventory * self.final_mid - self.fee_raw
         self.peak_equity = max(self.peak_equity, equity)
         self.max_drawdown = max(self.max_drawdown, self.peak_equity - equity)
+        # New quotes are placed only AFTER observing this event's book,
+        # never eligible to fill on the event that triggered their creation.
+        if event.ts >= self.next_refresh:
+            self.refresh(event, event.ts)
 
     def summary(self, day: str, count: int) -> dict[str, object]:
         if self.final_mid is None or self.first_ts is None or self.last_ts is None:
