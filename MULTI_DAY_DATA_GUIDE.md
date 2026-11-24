@@ -1,8 +1,10 @@
-# Data acquisition for a genuine multi-day AAPL study
+# Data acquisition for extending the completed AAPL multi-day study
 
-**Goal:** obtain **at least 30 independently dated AAPL trading sessions**, preferably 60, with event-by-event Nasdaq price/size/side changes and displayed book levels. Purchase *historical market data*, not shares. Do not spend money on a broker account or live trading for this project.
+**Completed without purchase:** Seven **different** historical Nasdaq TotalView-ITCH 5.0 full-day samples (2019–2020) were downloaded and analysed successfully. [Read the verified seven-day results](NASDAQ_MULTI_DAY_RESULTS.md). **No user money was spent.**
 
-## First choice: LOBSTER historical AAPL, level 5
+**Further goal:** for stronger inference obtain **at least 30 independently dated AAPL trading sessions**, preferably 60 or more, with event-by-event order and displayed book information. Purchase *historical market data*, not shares. Do not spend money on a brokerage account or live trading for this project.
+
+## Option 1: LOBSTER historical AAPL, level 5 (additional paid days)
 
 Official service: https://php.lobsterdata.com/
 
