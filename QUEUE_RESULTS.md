@@ -1,6 +1,6 @@
 # Experiment 5 — Historical AAPL with depth-aware queue estimates
 
-**Historical run:** 24 November 2026. [Successful GitHub Actions execution](https://github.com/rileysanders/market-making-inventory-simulator/actions/runs/45299729952). **All 29 Python unit tests passed.**
+**Historical run:** 24 November 2026. [Successful GitHub Actions execution](https://github.com/rileysanders/market-making-inventory-simulator/actions/runs/45300262815). **All 31 Python unit tests passed.**
 
 ## Hypothesis
 
