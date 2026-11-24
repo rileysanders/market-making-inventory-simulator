@@ -1,0 +1,83 @@
+name: AAPL seven independent public Nasdaq ITCH days
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/nasdaq-seven-days.yml"
+permissions:
+  contents: read
+
+jobs:
+  replay-independent-days:
+    name: Real AAPL ITCH date ${{ matrix.date }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        date: ["01302019", "03272019", "07302019", "08302019", "10302019", "12302019", "01302020"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run validated model tests
+        run: python -m unittest discover -s tests -v
+      - name: Reconstruct one full Nasdaq feed and evaluate only AAPL
+        run: python -u nasdaq_day_replay.py --date ${{ matrix.date }} --output results/nasdaq_public/${{ matrix.date }}
+      - name: Validate evidence represents full Nasdaq day and genuine AAPL events
+        shell: python
+        run: |
+          import json
+          from pathlib import Path
+          meta=json.loads(Path("results/nasdaq_public/${{ matrix.date }}/provenance.json").read_text())
+          assert meta["all_feed_messages"] > 1_000_000, meta
+          assert meta["regular_session_aapl_book_events"] > 10_000, meta
+          assert meta["market_data_are_historical"] and meta["strategy_order_fills_are_hypothetical"]
+          print("Full historical Nasdaq AAPL day verified, raw exchange data not redistributed", flush=True)
+      - name: Upload only derived statistics and provenance
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nasdaq-aapl-${{ matrix.date }}
+          path: |
+            results/nasdaq_public/${{ matrix.date }}/policy_results.csv
+            results/nasdaq_public/${{ matrix.date }}/provenance.json
+          retention-days: 60
+
+  chronology-protected-report:
+    needs: replay-independent-days
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Download individual independent daily summaries
+        uses: actions/download-artifact@v4
+        with:
+          pattern: nasdaq-aapl-*
+          path: results/nasdaq_public
+          merge-multiple: false
+      - name: Produce fixed-policy paired daily report and two-day holdout
+        run: python nasdaq_multiday_report.py --results-dir results/nasdaq_public --output results/nasdaq_multi_day
+      - name: Enforce exactly seven unique real days
+        shell: python
+        run: |
+          import json
+          from pathlib import Path
+          report=json.loads(Path("results/nasdaq_multi_day/multi_day_summary.json").read_text())
+          assert report["number_of_distinct_days"] == 7
+          assert len(set(report["actual_independent_dates"])) == 7
+          assert report["candidate_fills_are_hypothetical"]
+          print("Seven unique Nasdaq dates verified", flush=True)
+      - name: Upload final reproducible research tables
+        uses: actions/upload-artifact@v4
+        with:
+          name: nasdaq-aapl-seven-day-research
+          path: |
+            results/nasdaq_multi_day/multi_day_summary.json
+            results/nasdaq_multi_day/multi_day_table.csv
+          retention-days: 90
