@@ -94,6 +94,17 @@ class QueueModelTests(unittest.TestCase):
         self.assertAlmostEqual(outcome["gross_pnl_usd"], .01)
         self.assertAlmostEqual(outcome["net_pnl_usd"], 0.0)
 
+    def test_terminal_liquidation_uses_bid_and_exit_fee(self):
+        agent = QueueAgent(Config(latency_ms=0, refresh_s=10, fee_cents=1))
+        rows = [event(0), event(.02, 4, 5, 1_000_000, 1)]
+        for i, e in enumerate(rows):
+            agent.on_event(e, rows[i-1] if i else None)
+        outcome = agent.summary("2012-06-21", len(rows))
+        self.assertTrue(outcome["terminal_liquidation_feasible_at_displayed_top"])
+        self.assertAlmostEqual(outcome["net_pnl_usd"], 0.0)
+        self.assertAlmostEqual(outcome["terminal_liquidated_net_usd"], -.02)
+        self.assertAlmostEqual(outcome["terminal_liquidation_spread_drag_usd"], .01)
+
     def test_lobster_post_event_alignment_and_csv_schema(self):
         with tempfile.TemporaryDirectory() as temp:
             file = Path(temp) / "sample.zip"
