@@ -21,9 +21,15 @@ flowchart LR
     G --> H["Chronological holdout report"]
 ```
 
-## New: genuine multi-day AAPL research using free Nasdaq exchange feeds
+## Completed: seven distinct real Nasdaq AAPL trading days
 
-**Project stage (24 November 2026): code and tests are complete; the seven-date raw-exchange run has been launched, but its final numerical findings are not yet verified.**
+**Verified 24 November 2026:** [All seven distinct trading-day runs and final report completed successfully](https://github.com/rileysanders/market-making-inventory-simulator/actions/runs/45324827552). We reconstructed **10,035,344 actual AAPL regular-session order events** from **2,369,197,548 Nasdaq feed messages** across seven separate 2019–2020 market days.
+
+**[Read the completed seven-day research report, all daily results, and key limitations](NASDAQ_MULTI_DAY_RESULTS.md).** Across the seven dates under conservative queue assumptions, fixed quotes averaged **−$8.244** and inventory-aware quotes **−$6.921** of *hypothetical daily net P&L after an assumed terminal liquidation*. Inventory-aware quoting reduced average absolute inventory from **4.095** to **0.982 shares** (approximately **76% less**), but **lost money on all seven days**. No reliable expected-profit or executable trading edge has been established.
+
+![Historical AAPL seven-day hypothetical net P&L](results/nasdaq_multi_day/daily_net_pnl.svg)
+
+[All-date and holdout CSV](results/nasdaq_multi_day/multi_day_table.csv) · [Detailed 42-row daily policy results](results/nasdaq_multi_day/daily_policy_results.csv) · [Original source manifest](results/nasdaq_multi_day/source_manifest.csv).
 
 Nasdaq provides **seven distinct publicly accessible full-day TotalView-ITCH 5.0 sample dates** from 2019 to 2020. Instead of pretending the free 2012 LOBSTER sample covers different days, this extension reconstructs AAPL orders from the exchange's actual binary order-by-order messages and replays the predeclared market-making strategies on each day.
 
@@ -32,11 +38,11 @@ Nasdaq provides **seven distinct publicly accessible full-day TotalView-ITCH 5.0
 - **[One-day raw-exchange replay](nasdaq_day_replay.py)** — stream the multi-gigabyte official feed without redistributing or committing raw data
 - **[Chronology-protected seven-date analysis](nasdaq_multiday_report.py)** — day-level paired outcomes, three execution assumptions, last-two-date descriptive holdout and strict duplicate-day checks
 - **[Seven-day GitHub Actions research run](https://github.com/rileysanders/market-making-inventory-simulator/actions/workflows/nasdaq-seven-days.yml)** — all seven independent historical dates, with data provenance and published derived outputs only
-- **[Continuous integration checks](.github/workflows/quant-quality.yml)** — 41 tests passed on Python 3.10 and Python 3.12 as of 24 November 2026
+- **[Continuous integration checks](.github/workflows/quant-quality.yml)** — 42 tests passed on Python 3.10 and Python 3.12 as of 24 November 2026
 
 **These are two separate data pipelines:** `multi_day_research.py` requires 12+ additional LOBSTER ZIP dates, whereas `nasdaq_day_replay.py` and `nasdaq_multiday_report.py` process the seven public 2019–2020 raw Nasdaq ITCH samples. Do not pool 2012 LOBSTER and 2019–2020 ITCH results as if they were one randomly sampled trading regime.
 
-**Do not interpret a queued or in-progress workflow as a completed empirical study.** The seven historical dates are public *nonrandom* sample days. Even after successful analysis, seven days are insufficient to establish robust expected trading profit. Our executions remain counterfactual; extra historical data and improved order-level queue validation are needed for a truly strong inference.
+**Evidence limitation:** Although the seven-day source and model runs are verified, the public sample dates are **nonrandom and few**, while our order fills remain **counterfactual estimates**. Seven days cannot establish robust expected profit. Additional dates and order-level queue-model validation remain necessary.
 
 [Official Nasdaq ITCH sample collection](https://emi.nasdaq.com/ITCH/) · [Nasdaq binary feed specification](https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/NQTVITCHSpecification_5.0.pdf).
 
@@ -48,13 +54,13 @@ A **[separate, verified cross-sectional study](CROSS_ASSET_RESULTS.md)** applied
 
 [Conservative scenario results CSV](results/cross_stocks/summary_conservative.csv) · [Full findings and execution caveats](CROSS_ASSET_RESULTS.md) · [Successful automated run](https://github.com/rileysanders/market-making-inventory-simulator/actions/runs/45325240016).
 
-## Latest: AAPL depth-aware queue replay and multi-day research framework
+## Earlier: AAPL depth-aware queue replay (one 2012 day)
 
 **[Experiment 5 research report and verified results](QUEUE_RESULTS.md)** · **[Advanced methodology](ADVANCED_QUEUE_STUDY.md)** · **[Results CSV](results/queue_replay/queue_sensitivity.csv)**
 
 The upgraded experiment uses **301,587 real AAPL Nasdaq order-book events** from LOBSTER's 5-level sample on **21 June 2012**. Unlike the earlier price-touch model, hypothetical quotes join behind the displayed volume already at their price; actual historical trades must consume that estimated volume before a fill can occur. It includes order-entry latency, periodic quote replacement, cancellation-ahead uncertainty, fees, inventory risk and an alternative end-of-day liquidation estimate.
 
-**Verified GitHub Actions run:** [Queue-aware AAPL study, 24 November 2026](https://github.com/rileysanders/market-making-inventory-simulator/actions/runs/45299729952) — **41 passing Python tests**.
+**Verified GitHub Actions run:** [Queue-aware AAPL study, 24 November 2026](https://github.com/rileysanders/market-making-inventory-simulator/actions/runs/45299729952) — **29 tests passed in that original queue study run**; the current full CI suite has **42 passing tests**.
 
 ![AAPL queue model P&L and inventory](results/queue_replay/risk_return_tradeoff.svg)
 
@@ -67,7 +73,7 @@ The upgraded experiment uses **301,587 real AAPL Nasdaq order-book events** from
 
 **Finding:** Fixed quotes show higher *hypothetical* net P&L in the deeper queue model, while inventory-aware quotes show much lower inventory exposure and drawdown. This differs from the Level-1 touch-fill replay and highlights sensitivity to execution assumptions, **not proof of a profitable strategy**.
 
-**Multi-day status:** The new [`multi_day_research.py`](multi_day_research.py) implements unique-date validation, chronological development/validation/untouched-test splits, a locked strategy selection and daily paired uncertainty estimates. **Multi-day AAPL data has not yet been acquired or tested**, so **no multi-day performance claim has been made**. See [how to obtain compatible historical data](MULTI_DAY_DATA_GUIDE.md).
+**Alternative LOBSTER-specific multi-day framework:** [`multi_day_research.py`](multi_day_research.py) still requires additional **licensed LOBSTER ZIP dates**; those particular additional LOBSTER dates have not been purchased. The **separate Nasdaq ITCH seven-day experiment described above is completed** using genuinely different public dates, with its own decoder and report. See [data acquisition options](MULTI_DAY_DATA_GUIDE.md).
 
 On Windows, without VS Code, the [one-click seven-day launcher](run_nasdaq_public_windows.bat) asks for confirmation because it streams more than 30 GB of historical Nasdaq data. The smaller 2012 experiment is run with:
 
@@ -84,11 +90,12 @@ python queue_replay.py --download --output results\queue_replay
 | **3. Fees + adverse selection** | Does the original advantage survive trading costs and adverse price moves following aggressive customer flow? | **[Research note](FRICTION_STUDY.md)** · [CSV](results/frictions/friction_grid.csv) |
 | **4. Historical AAPL Level-1 replay** | How does a simple historical quote-touch model behave? | [Research report](AAPL_HISTORICAL_STUDY.md) |
 | **5. Historical AAPL Level-5 queue replay** | How do queue-ahead volumes and latency change hypothetical fills? | **[Verified findings](QUEUE_RESULTS.md)** |
-| **6. Multi-day walk-forward framework** | Can the strategy survive untouched future dates and execution-model uncertainty? | [Code](multi_day_research.py) · **awaiting licensed independent days** |
+| **6. Licensed LOBSTER multi-day framework** | Could the Level-5 queue replay generalise over more licensed LOBSTER days? | [Code](multi_day_research.py) · still awaiting licensed LOBSTER dates |
+| **7. Seven actual Nasdaq 2019–2020 trading days** | What changes across different historical sessions with order-ID book reconstruction? | **[Verified empirical report](NASDAQ_MULTI_DAY_RESULTS.md)** · [Daily CSV](results/nasdaq_multi_day/daily_policy_results.csv) |
 
 ### Experiment 4 — AAPL on historical Nasdaq order-book data
 
-The newest module, [`aapl_replay.py`](aapl_replay.py), reads the **LOBSTER AAPL Level-1 historical sample from 21 June 2012** (real recorded Nasdaq order events and best quotes). It measures observed historical post-execution markouts separately from **hypothetical** fixed-quote and inventory-aware policy replays.
+The earlier module, [`aapl_replay.py`](aapl_replay.py), reads the **LOBSTER AAPL Level-1 historical sample from 21 June 2012** (real recorded Nasdaq order events and best quotes). It measures observed historical post-execution markouts separately from **hypothetical** fixed-quote and inventory-aware policy replays.
 
 - Uses the **previous** order-book snapshot for decisions, avoiding future-book lookahead.
 - Compares an optimistic same-price **touch** fill rule against a stricter **trade-through** rule to illustrate execution uncertainty.
