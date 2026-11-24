@@ -6,13 +6,30 @@ A reproducible, **AI-assisted educational project** investigating whether invent
 
 > **Research / educational status:** Experiments 1–3 are synthetic; Experiments 4–5 replay genuine recorded AAPL order-book events but all our strategy fills remain hypothetical. Neither provides proof of executable real-world profitability.
 
+## New: genuine multi-day AAPL research using free Nasdaq exchange feeds
+
+**Project stage (24 November 2026): code and tests are complete; the seven-date raw-exchange run has been launched, but its final numerical findings are not yet verified.**
+
+Nasdaq provides **seven distinct publicly accessible full-day TotalView-ITCH 5.0 sample dates** from 2019 to 2020. Instead of pretending the free 2012 LOBSTER sample covers different days, this extension reconstructs AAPL orders from the exchange's actual binary order-by-order messages and replays the predeclared market-making strategies on each day.
+
+- **[Formal, predeclared research protocol](QUANT_RESEARCH_PROTOCOL.md)** — hypotheses, data dates, predetermined settings, validity threats and evidence standards
+- **[Original AAPL order-ID decoder](nasdaq_itch.py)** — real ITCH add, execute, cancel, delete and replace messages, with order-book reconstruction checks
+- **[One-day raw-exchange replay](nasdaq_day_replay.py)** — stream the multi-gigabyte official feed without redistributing or committing raw data
+- **[Chronology-protected seven-date analysis](nasdaq_multiday_report.py)** — day-level paired outcomes, three execution assumptions, last-two-date descriptive holdout and strict duplicate-day checks
+- **[Seven-day GitHub Actions research run](https://github.com/rileysanders/market-making-inventory-simulator/actions/workflows/nasdaq-seven-days.yml)** — all seven independent historical dates, with data provenance and published derived outputs only
+- **[Continuous integration checks](.github/workflows/quant-quality.yml)** — 41 tests passed on Python 3.10 and Python 3.12 as of 24 November 2026
+
+**Do not interpret a queued or in-progress workflow as a completed empirical study.** The seven historical dates are public *nonrandom* sample days. Even after successful analysis, seven days are insufficient to establish robust expected trading profit. Our executions remain counterfactual; extra historical data and improved order-level queue validation are needed for a truly strong inference.
+
+[Official Nasdaq ITCH sample collection](https://emi.nasdaq.com/ITCH/) · [Nasdaq binary feed specification](https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/NQTVITCHSpecification_5.0.pdf).
+
 ## Latest: AAPL depth-aware queue replay and multi-day research framework
 
 **[Experiment 5 research report and verified results](QUEUE_RESULTS.md)** · **[Advanced methodology](ADVANCED_QUEUE_STUDY.md)** · **[Results CSV](results/queue_replay/queue_sensitivity.csv)**
 
 The upgraded experiment uses **301,587 real AAPL Nasdaq order-book events** from LOBSTER's 5-level sample on **21 June 2012**. Unlike the earlier price-touch model, hypothetical quotes join behind the displayed volume already at their price; actual historical trades must consume that estimated volume before a fill can occur. It includes order-entry latency, periodic quote replacement, cancellation-ahead uncertainty, fees, inventory risk and an alternative end-of-day liquidation estimate.
 
-**Verified GitHub Actions run:** [Queue-aware AAPL study, 24 November 2026](https://github.com/rileysanders/market-making-inventory-simulator/actions/runs/45299729952) — **31 passing Python tests**.
+**Verified GitHub Actions run:** [Queue-aware AAPL study, 24 November 2026](https://github.com/rileysanders/market-making-inventory-simulator/actions/runs/45299729952) — **41 passing Python tests**.
 
 ![AAPL queue model P&L and inventory](results/queue_replay/risk_return_tradeoff.svg)
 
