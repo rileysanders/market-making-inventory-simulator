@@ -6,6 +6,21 @@ A reproducible, **AI-assisted educational project** investigating whether invent
 
 > **Research / educational status:** Experiments 1–3 are synthetic; Experiments 4–5 replay genuine recorded AAPL order-book events but all our strategy fills remain hypothetical. Neither provides proof of executable real-world profitability.
 
+![Python tests](https://github.com/rileysanders/market-making-inventory-simulator/actions/workflows/quant-quality.yml/badge.svg)
+
+### How the research fits together
+
+```mermaid
+flowchart LR
+    A["Official Nasdaq historical ITCH data"] --> B["Binary market-event decoder"]
+    B --> C["Historical AAPL order-ID book"]
+    C --> D["Hypothetical market-making quotes"]
+    D --> E["Queue, latency and fee assumptions"]
+    E --> F["Per-day P&L and inventory risk"]
+    F --> G["Source-verified multi-day comparisons"]
+    G --> H["Chronological holdout report"]
+```
+
 ## New: genuine multi-day AAPL research using free Nasdaq exchange feeds
 
 **Project stage (24 November 2026): code and tests are complete; the seven-date raw-exchange run has been launched, but its final numerical findings are not yet verified.**
