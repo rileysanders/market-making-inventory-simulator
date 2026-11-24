@@ -1,0 +1,11 @@
+ticker,date,policy,cancel_ahead_fraction,market_events,hypothetical_fills,net_pnl_usd,terminal_liquidated_net_usd,average_abs_inventory,peak_to_trough_drawdown_usd
+AAPL,2012-06-21,fixed,0,301587,202,27.714,27.264,4.25403,18.376
+AAPL,2012-06-21,aware_1tick,0,301587,164,6.558,6.258,1.02729,4.338
+AMZN,2012-06-21,fixed,0,155935,92,14.984,14.684,2.82343,4.076
+AMZN,2012-06-21,aware_1tick,0,155935,76,2.702,2.702,1.33424,5.247
+GOOG,2012-06-21,fixed,0,112673,50,51.59,51.47,4.67539,13.65
+GOOG,2012-06-21,aware_1tick,0,112673,38,29.146,29.146,2.52957,9.1
+INTC,2012-06-21,fixed,0,581030,123,-2.314,-2.329,3.55131,3.732
+INTC,2012-06-21,aware_1tick,0,581030,79,-1.062,-1.077,0.6796,1.198
+MSFT,2012-06-21,fixed,0,595800,128,2.496,2.436,2.39728,0.704
+MSFT,2012-06-21,aware_1tick,0,595800,99,-0.212,-0.227,0.65676,0.462
