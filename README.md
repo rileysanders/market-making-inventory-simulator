@@ -34,6 +34,8 @@ Nasdaq provides **seven distinct publicly accessible full-day TotalView-ITCH 5.0
 - **[Seven-day GitHub Actions research run](https://github.com/rileysanders/market-making-inventory-simulator/actions/workflows/nasdaq-seven-days.yml)** — all seven independent historical dates, with data provenance and published derived outputs only
 - **[Continuous integration checks](.github/workflows/quant-quality.yml)** — 41 tests passed on Python 3.10 and Python 3.12 as of 24 November 2026
 
+**These are two separate data pipelines:** `multi_day_research.py` requires 12+ additional LOBSTER ZIP dates, whereas `nasdaq_day_replay.py` and `nasdaq_multiday_report.py` process the seven public 2019–2020 raw Nasdaq ITCH samples. Do not pool 2012 LOBSTER and 2019–2020 ITCH results as if they were one randomly sampled trading regime.
+
 **Do not interpret a queued or in-progress workflow as a completed empirical study.** The seven historical dates are public *nonrandom* sample days. Even after successful analysis, seven days are insufficient to establish robust expected trading profit. Our executions remain counterfactual; extra historical data and improved order-level queue validation are needed for a truly strong inference.
 
 [Official Nasdaq ITCH sample collection](https://emi.nasdaq.com/ITCH/) · [Nasdaq binary feed specification](https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/NQTVITCHSpecification_5.0.pdf).
@@ -67,7 +69,7 @@ The upgraded experiment uses **301,587 real AAPL Nasdaq order-book events** from
 
 **Multi-day status:** The new [`multi_day_research.py`](multi_day_research.py) implements unique-date validation, chronological development/validation/untouched-test splits, a locked strategy selection and daily paired uncertainty estimates. **Multi-day AAPL data has not yet been acquired or tested**, so **no multi-day performance claim has been made**. See [how to obtain compatible historical data](MULTI_DAY_DATA_GUIDE.md).
 
-On Windows, without VS Code:
+On Windows, without VS Code, the [one-click seven-day launcher](run_nasdaq_public_windows.bat) asks for confirmation because it streams more than 30 GB of historical Nasdaq data. The smaller 2012 experiment is run with:
 
 ```cmd
 python queue_replay.py --download --output results\queue_replay
