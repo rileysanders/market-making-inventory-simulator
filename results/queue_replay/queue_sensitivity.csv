@@ -1,0 +1,7 @@
+day,policy,cancel_ahead_fraction,latency_ms,refresh_seconds,market_events,hypothetical_fills,gross_pnl_usd,net_pnl_usd,total_fees_usd,ending_inventory,max_abs_inventory,average_abs_inventory,peak_to_trough_drawdown_usd,quote_refreshes,quote_cancellations,invalid_book_events
+2012-06-21,fixed,0.0,10.0,2.0,301587,202,28.32,27.714,0.606,6,6,4.25403,18.376,9431,15420,0
+2012-06-21,aware_1tick,0.0,10.0,2.0,301587,164,7.05,6.558,0.492,4,4,1.02729,4.338,9431,15054,0
+2012-06-21,fixed,0.5,10.0,2.0,301587,279,37.435,36.598,0.837,5,6,4.42723,18.421,9431,15039,0
+2012-06-21,aware_1tick,0.5,10.0,2.0,301587,229,9.915,9.228,0.687,1,4,1.05301,3.257,9431,14651,0
+2012-06-21,fixed,1.0,10.0,2.0,301587,316,27.44,26.492,0.948,4,6,4.24163,17.469,9431,15378,0
+2012-06-21,aware_1tick,1.0,10.0,2.0,301587,258,6.03,5.256,0.774,0,4,0.97868,4.712,9431,14715,0
