@@ -4,6 +4,7 @@ No historical-data performance claims result from these fixtures.
 """
 import gzip
 import io
+import random
 import struct
 import unittest
 from nasdaq_itch import PriceBook, ReconstructionStats, frames, replay_aapl_itch
@@ -91,6 +92,63 @@ class NativeItchTests(unittest.TestCase):
     def test_orphaned_events_rejected(self):
         with self.assertRaisesRegex(ValueError,"Orphaned"):
             PriceBook().process(cancel(34200,7,1))
+
+    def test_randomized_order_book_conservation(self):
+        # Independent aggregate recomputation checks an invariant after
+        # randomized real ITCH-type operations on synthetic order messages.
+        rng = random.Random(20261124)
+        book = PriceBook()
+        live = {}
+        next_ref = 1
+        ts = 34200
+        for _ in range(500):
+            ts += 1
+            if not live or rng.random() < 0.52:
+                ref = next_ref
+                next_ref += 1
+                side = rng.choice(["B", "S"])
+                price = rng.choice([999_800, 999_900, 1_000_000] if side == "B"
+                                   else [1_000_100, 1_000_200, 1_000_300])
+                qty = rng.randint(1, 200)
+                book.process(add(ts, ref, qty, price, side))
+                live[ref] = (1 if side == "B" else -1, qty, price)
+            else:
+                ref = rng.choice(list(live))
+                side, qty, price = live[ref]
+                choice = rng.choice(["cancel", "exec", "delete", "replace"])
+                if choice == "delete":
+                    book.process(delete(ts, ref))
+                    del live[ref]
+                elif choice == "replace":
+                    new_ref = next_ref
+                    next_ref += 1
+                    size = rng.randint(1, 200)
+                    new_price = price + rng.choice((-100, 0, 100))
+                    book.process(replace(ts, ref, new_ref, size, new_price))
+                    del live[ref]
+                    live[new_ref] = (side, size, new_price)
+                else:
+                    removed = rng.randint(1, qty)
+                    book.process(cancel(ts, ref, removed) if choice == "cancel"
+                                 else execute(ts, ref, removed))
+                    if removed == qty:
+                        del live[ref]
+                    else:
+                        live[ref] = (side, qty-removed, price)
+            expected = {1: {}, -1: {}}
+            for side, quantity, price in live.values():
+                expected[side][price] = expected[side].get(price, 0) + quantity
+            self.assertEqual(book.orders, live)
+            self.assertEqual(book.levels, expected)
+            for side in (1, -1):
+                self.assertEqual(book.prices[side], sorted(expected[side]))
+            asks, bids = book.top()
+            self.assertEqual(bids, tuple(
+                (p, expected[1][p]) for p in sorted(expected[1], reverse=True)[:5]
+            ))
+            self.assertEqual(asks, tuple(
+                (p, expected[-1][p]) for p in sorted(expected[-1])[:5]
+            ))
 
     def test_reconstruction_preserves_premarket_and_excludes_after_hours(self):
         msgs=[
