@@ -5,7 +5,7 @@ from dataclasses import replace
 from pathlib import Path
 from zipfile import ZipFile
 
-from multi_day_research import analyse, discover_days, partition_days
+from multi_day_research import analyse, discover_days, partition_days, run_many
 from queue_replay import Config, Event, QueueAgent, run_day, stream_zip
 
 
@@ -129,6 +129,23 @@ class QueueModelTests(unittest.TestCase):
         self.assertTrue(max(split["validation"]) < min(split["holdout_test"]))
         with self.assertRaisesRegex(ValueError, "ONE day"):
             partition_days(["2012-06-21"])
+
+    def test_complete_multi_day_pipeline_with_unique_fixture_dates(self):
+        # These tiny test ZIPs are SYNTHETIC and must never be reported as
+        # historical backtest results. Their file names deliberately do not
+        # contain dates to test provenance extraction from within archives.
+        with tempfile.TemporaryDirectory() as temp:
+            folder = Path(temp) / "licensed_days"
+            folder.mkdir()
+            for i in range(1, 11):
+                make_zip(folder / f"archive_{i:02d}.zip", f"2026-10-{i:02d}")
+            output = Path(temp) / "output"
+            result = run_many(folder, output, depth=5, min_days=10)
+            self.assertEqual(len(result["splits"]["holdout_test"]), 2)
+            self.assertEqual(len(result["holdout_robustness"]), 6)
+            self.assertTrue((output / "daily_policy_results.csv").exists())
+            self.assertTrue((output / "walk_forward_summary.json").exists())
+            self.assertTrue((output / "holdout_robustness.csv").exists())
 
     def test_selection_locked_to_validation_not_holdout(self):
         split = dict(development=["d1","d2"], validation=["v1","v2"],
