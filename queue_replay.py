@@ -143,6 +143,10 @@ class QueueAgent:
         self.first_ts: float | None = None
         self.next_refresh = float("-inf")
         self.final_mid: float | None = None
+        self.final_bid: int | None = None
+        self.final_ask: int | None = None
+        self.final_bid_size: int = 0
+        self.final_ask_size: int = 0
         self.peak_equity = 0.0
         self.max_drawdown = 0.0
         self.invalid_books = 0
@@ -211,6 +215,8 @@ class QueueAgent:
                 self.cancels += 1
                 setattr(self, attr, None)
         self.final_mid = event.mid()
+        self.final_bid, self.final_bid_size = event.bids[0]
+        self.final_ask, self.final_ask_size = event.asks[0]
         equity = self.cash_raw + self.inventory * self.final_mid - self.fee_raw
         self.peak_equity = max(self.peak_equity, equity)
         self.max_drawdown = max(self.max_drawdown, self.peak_equity - equity)
@@ -223,6 +229,30 @@ class QueueAgent:
         if self.final_mid is None or self.first_ts is None or self.last_ts is None:
             raise ValueError("No valid market prices")
         gross = (self.cash_raw + self.inventory * self.final_mid) / SCALE
+        # Separate optional one-shot terminal liquidation estimate: use
+        # displayed opposite-side best quote, assuming enough displayed size.
+        # An illustrative ADDITIONAL 1-cent taker fee/share is applied.
+        liquidity_ok = (
+            self.inventory == 0
+            or (self.inventory > 0 and self.final_bid_size >= self.inventory)
+            or (self.inventory < 0 and self.final_ask_size >= -self.inventory)
+        )
+        liquidation = None
+        liquidation_spread_drag = None
+        if liquidity_ok:
+            if self.inventory > 0:
+                exit_price = self.final_bid
+            elif self.inventory < 0:
+                exit_price = self.final_ask
+            else:
+                exit_price = self.final_mid
+            assert exit_price is not None
+            exit_raw = self.cash_raw + self.inventory * exit_price - self.fee_raw
+            exit_raw -= abs(self.inventory) * TICK  # assumed 1 cent/share taker fee
+            liquidation = round(exit_raw / SCALE, 5)
+            liquidation_spread_drag = round(
+                abs(self.inventory * (self.final_mid - exit_price)) / SCALE, 5
+            )
         return dict(
             day=day,
             policy="fixed" if self.cfg.skew_ticks == 0 else f"aware_{self.cfg.skew_ticks}tick",
@@ -234,6 +264,10 @@ class QueueAgent:
             gross_pnl_usd=round(gross, 5),
             net_pnl_usd=round(gross - self.fee_raw / SCALE, 5),
             total_fees_usd=round(self.fee_raw / SCALE, 5),
+            terminal_liquidation_feasible_at_displayed_top=liquidity_ok,
+            terminal_liquidated_net_usd=liquidation,
+            terminal_liquidation_spread_drag_usd=liquidation_spread_drag,
+            terminal_taker_fee_assumption_cents=1.0,
             ending_inventory=self.inventory,
             max_abs_inventory=self.max_inventory,
             average_abs_inventory=round(
