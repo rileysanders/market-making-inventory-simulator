@@ -1,0 +1,26 @@
+name: Nasdaq public ITCH source availability probe
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/nasdaq-source-probe.yml"
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check documented public sample dates without downloading gigabytes
+        shell: python
+        run: |
+          import urllib.request
+          dates = ("01302019", "03272019", "07302019", "08302019", "10302019", "12302019", "01302020")
+          for date in dates:
+              url = f"https://emi.nasdaq.com/ITCH/Nasdaq%20ITCH/{date}.NASDAQ_ITCH50.gz"
+              req = urllib.request.Request(url, method="HEAD", headers={"User-Agent": "EducationalMarketMicrostructureResearch/1.0"})
+              try:
+                  with urllib.request.urlopen(req, timeout=25) as response:
+                      print(date, "HTTP", response.status, "size", response.headers.get("Content-Length"), "type", response.headers.get("Content-Type"), flush=True)
+              except Exception as e:
+                  print(date, "UNAVAILABLE", type(e).__name__, str(e)[:200], flush=True)
