@@ -153,7 +153,7 @@ def run_many(directory: Path, output: Path, depth: int = 5, min_days: int = 12) 
     rows = []
     for day, path in dates_and_files:
         print(f"Replaying AAPL {day} from {path.name}", flush=True)
-        daily = run_day(path, configs, depth)
+        daily = run_day(path, configs, depth, day_override=day)
         if any(x["day"] != day for x in daily):
             raise ValueError(f"Date mismatch in {path}")
         rows.extend(daily)
