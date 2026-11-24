@@ -1,0 +1,33 @@
+name: Historical Nasdaq ITCH AAPL real-day replay
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "nasdaq_itch.py"
+      - "nasdaq_day_replay.py"
+      - "tests/test_nasdaq_itch.py"
+      - ".github/workflows/nasdaq-itch-aapl.yml"
+permissions:
+  contents: read
+jobs:
+  test-and-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate parser and prior queue-model tests
+        run: python -m unittest discover -s tests -v
+      - name: Reconstruct and replay full public Nasdaq 2019-01-30 AAPL ITCH
+        run: python -u nasdaq_day_replay.py --date 01302019 --output results/nasdaq_public/01302019
+      - name: Upload derived outputs only, no licensed raw exchange files
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nasdaq-aapl-01302019
+          path: |
+            results/nasdaq_public/01302019/policy_results.csv
+            results/nasdaq_public/01302019/provenance.json
+          retention-days: 30
