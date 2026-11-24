@@ -1,0 +1,7 @@
+sample,cancel_ahead_fraction,distinct_days,fixed_mean_liquidated_usd,aware_mean_liquidated_usd,aware_minus_fixed_mean_usd,paired_median_usd,aware_beats_fixed_days,fixed_losing_days,aware_losing_days,fixed_mean_abs_inventory,aware_mean_abs_inventory
+all_dates,0.0,7,-8.24429,-6.92086,1.32343,2.866,4,5,7,4.0953,0.98173
+all_dates,0.5,7,-18.55429,-13.58814,4.96614,2.332,5,7,7,3.76615,1.07068
+all_dates,1.0,7,-23.78857,-17.53429,6.25429,6.733,4,7,7,3.69528,1.26598
+chronological_last_two,0.0,2,-17.704,-9.6225,8.0815,8.0815,2,2,2,3.45999,0.9243
+chronological_last_two,0.5,2,-34.7065,-16.271,18.4355,18.4355,2,2,2,3.34563,1.02717
+chronological_last_two,1.0,2,-44.6095,-16.559,28.0505,28.0505,2,2,2,3.48372,1.27881
