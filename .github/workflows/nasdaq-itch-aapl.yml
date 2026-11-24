@@ -1,12 +1,6 @@
 name: Historical Nasdaq ITCH AAPL real-day replay
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - "nasdaq_itch.py"
-      - "nasdaq_day_replay.py"
-      - "tests/test_nasdaq_itch.py"
-      - ".github/workflows/nasdaq-itch-aapl.yml"
 permissions:
   contents: read
 jobs:
