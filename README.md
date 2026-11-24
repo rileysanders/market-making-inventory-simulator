@@ -12,7 +12,7 @@ A reproducible, **AI-assisted educational project** investigating whether invent
 
 The upgraded experiment uses **301,587 real AAPL Nasdaq order-book events** from LOBSTER's 5-level sample on **21 June 2012**. Unlike the earlier price-touch model, hypothetical quotes join behind the displayed volume already at their price; actual historical trades must consume that estimated volume before a fill can occur. It includes order-entry latency, periodic quote replacement, cancellation-ahead uncertainty, fees, inventory risk and an alternative end-of-day liquidation estimate.
 
-**Verified GitHub Actions run:** [Queue-aware AAPL study, 24 November 2026](https://github.com/rileysanders/market-making-inventory-simulator/actions/runs/45299729952) — **29 passing Python tests**.
+**Verified GitHub Actions run:** [Queue-aware AAPL study, 24 November 2026](https://github.com/rileysanders/market-making-inventory-simulator/actions/runs/45299729952) — **31 passing Python tests**.
 
 ![AAPL queue model P&L and inventory](results/queue_replay/risk_return_tradeoff.svg)
 
