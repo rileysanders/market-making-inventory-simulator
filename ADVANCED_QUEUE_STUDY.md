@@ -4,7 +4,7 @@
 
 This document governs the new historical depth-aware queue experiment and future multiple-day AAPL evaluation.
 
-**Current data availability:** LOBSTER provides a **free, public, single historical session** for AAPL on 2012-06-21, at 1, 5 and 10 displayed depth levels. The improved execution model **has been executed successfully** on the Level-5 historical sample, using 301,587 recorded AAPL events; all 31 automated tests passed. [Verified results](QUEUE_RESULTS.md). **No independent multi-day AAPL results are claimed until additional genuinely distinct dates have been licensed, obtained, checked and analysed.**
+**Current data availability:** LOBSTER provides a **free, public, single historical session** for AAPL on 2012-06-21, at 1, 5 and 10 displayed depth levels. The improved execution model **has been executed successfully** on the Level-5 historical sample, using 301,587 recorded AAPL events; all 31 automated tests passed. [Verified results](QUEUE_RESULTS.md). **This LOBSTER-specific pipeline still awaits additional licensed LOBSTER dates. However, a separate raw-Nasdaq-ITCH decoder has already successfully analysed seven different free Nasdaq AAPL days. See the independent [2019–2020 seven-day results](NASDAQ_MULTI_DAY_RESULTS.md).**
 
 The earlier Experiment 4 used an optimistic price-touch fill rule. Our new implementation is more conservative: a hypothetical order must join a displayed queue and wait for historical executed volume to deplete **an estimated quantity ahead** before the fill is counted.
 
