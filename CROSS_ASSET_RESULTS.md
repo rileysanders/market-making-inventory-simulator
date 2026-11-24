@@ -12,6 +12,8 @@ The comparison is fixed quoting versus a one-tick-per-inventory-unit retreat of 
 
 Source: [LOBSTER official sample downloads](https://php.lobsterdata.com/info/DataSamples.php). Data are not redistributed here.
 
+![Five-stock historical queue model net P&L](results/cross_stocks/stock_pnl.svg)
+
 ## Verified one-day results: 0% cancellation assumed ahead
 
 | Ticker | Actual LOBSTER level-5 events | Fixed net midpoint P&L | Inventory-aware net midpoint P&L | Fixed average abs. inventory | Aware average abs. inventory |
