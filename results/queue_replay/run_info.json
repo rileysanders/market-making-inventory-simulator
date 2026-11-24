@@ -1,0 +1,9 @@
+{
+  "source": "https://php.lobsterdata.com/info/sample/LOBSTER_SampleFile_AAPL_2012-06-21_5.zip",
+  "historical_days": 1,
+  "depth_levels": 5,
+  "event_count": 301587,
+  "all_order_fills_hypothetical": true,
+  "queue_ahead_proxy": "entire displayed depth at posting",
+  "vendor_raw_data_distributed": false
+}
