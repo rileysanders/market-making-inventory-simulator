@@ -4,7 +4,34 @@
 
 A reproducible, **AI-assisted educational project** investigating whether inventory-aware bid–ask quotes change a market maker's profit distribution and inventory risk. The study compares fixed quotes against quotes adjusted for the dealer's current inventory.
 
-> **This is a synthetic, deliberately simplified model.** It is not historical backtesting, live trading, or proof that a real-world strategy is profitable.
+> **Research / educational status:** Experiments 1–3 are synthetic; Experiments 4–5 replay genuine recorded AAPL order-book events but all our strategy fills remain hypothetical. Neither provides proof of executable real-world profitability.
+
+## Latest: AAPL depth-aware queue replay and multi-day research framework
+
+**[Experiment 5 research report and verified results](QUEUE_RESULTS.md)** · **[Advanced methodology](ADVANCED_QUEUE_STUDY.md)** · **[Results CSV](results/queue_replay/queue_sensitivity.csv)**
+
+The upgraded experiment uses **301,587 real AAPL Nasdaq order-book events** from LOBSTER's 5-level sample on **21 June 2012**. Unlike the earlier price-touch model, hypothetical quotes join behind the displayed volume already at their price; actual historical trades must consume that estimated volume before a fill can occur. It includes order-entry latency, periodic quote replacement, cancellation-ahead uncertainty, fees, inventory risk and an alternative end-of-day liquidation estimate.
+
+**Verified GitHub Actions run:** [Queue-aware AAPL study, 24 November 2026](https://github.com/rileysanders/market-making-inventory-simulator/actions/runs/45299729952) — **29 passing Python tests**.
+
+![AAPL queue model P&L and inventory](results/queue_replay/risk_return_tradeoff.svg)
+
+**Conservative (0% cancellation-ahead) one-day results:**
+
+| Policy | Hypothetical fills | Net P&L marked to midpoint | Net estimated after terminal liquidation | Time-weighted absolute inventory | Max marked drawdown |
+|---|---:|---:|---:|---:|---:|
+| Fixed quotes | 202 | +$27.714 | +$27.264 | 4.254 shares | $18.376 |
+| Inventory-aware | 164 | +$6.558 | +$6.258 | **1.027 shares** | **$4.338** |
+
+**Finding:** Fixed quotes show higher *hypothetical* net P&L in the deeper queue model, while inventory-aware quotes show much lower inventory exposure and drawdown. This differs from the Level-1 touch-fill replay and highlights sensitivity to execution assumptions, **not proof of a profitable strategy**.
+
+**Multi-day status:** The new [`multi_day_research.py`](multi_day_research.py) implements unique-date validation, chronological development/validation/untouched-test splits, a locked strategy selection and daily paired uncertainty estimates. **Multi-day AAPL data has not yet been acquired or tested**, so **no multi-day performance claim has been made**. See [how to obtain compatible historical data](MULTI_DAY_DATA_GUIDE.md).
+
+On Windows, without VS Code:
+
+```cmd
+python queue_replay.py --download --output results\queue_replay
+```
 
 ## Research at a glance
 
@@ -13,7 +40,9 @@ A reproducible, **AI-assisted educational project** investigating whether invent
 | **1. Original quoting simulator** | Does inventory-sensitive quoting change P&L and exposure under simple order arrivals? | [Initial results](results/summary.csv) |
 | **2. Volatility × skew sweep** | Does the effect depend on market volatility and how aggressively quotes adjust? | [Research notes](RESEARCH_NOTES.md) · [CSV](results/sensitivity/sensitivity.csv) |
 | **3. Fees + adverse selection** | Does the original advantage survive trading costs and adverse price moves following aggressive customer flow? | **[Research note](FRICTION_STUDY.md)** · [CSV](results/frictions/friction_grid.csv) |
-| **4. Historical AAPL order-book replay (new)** | What happens when we replace imaginary prices and order flow with recorded Nasdaq AAPL events? | **[Replay code](aapl_replay.py)** · [Methodology and status](AAPL_HISTORICAL_STUDY.md) |
+| **4. Historical AAPL Level-1 replay** | How does a simple historical quote-touch model behave? | [Research report](AAPL_HISTORICAL_STUDY.md) |
+| **5. Historical AAPL Level-5 queue replay** | How do queue-ahead volumes and latency change hypothetical fills? | **[Verified findings](QUEUE_RESULTS.md)** |
+| **6. Multi-day walk-forward framework** | Can the strategy survive untouched future dates and execution-model uncertainty? | [Code](multi_day_research.py) · **awaiting licensed independent days** |
 
 ### Experiment 4 — AAPL on historical Nasdaq order-book data
 
