@@ -4,7 +4,7 @@
 
 This document governs the new historical depth-aware queue experiment and future multiple-day AAPL evaluation.
 
-**Current data availability:** LOBSTER provides a **free, public, single historical session** for AAPL on 2012-06-21, at 1, 5 and 10 displayed depth levels. We can run the improved execution model against the 5-level sample now. **No independent multi-day AAPL results are claimed until additional genuinely distinct dates have been licensed, obtained, checked and analysed.**
+**Current data availability:** LOBSTER provides a **free, public, single historical session** for AAPL on 2012-06-21, at 1, 5 and 10 displayed depth levels. The improved execution model **has been executed successfully** on the Level-5 historical sample, using 301,587 recorded AAPL events; all 31 automated tests passed. [Verified results](QUEUE_RESULTS.md). **No independent multi-day AAPL results are claimed until additional genuinely distinct dates have been licensed, obtained, checked and analysed.**
 
 The earlier Experiment 4 used an optimistic price-touch fill rule. Our new implementation is more conservative: a hypothetical order must join a displayed queue and wait for historical executed volume to deplete **an estimated quantity ahead** before the fill is counted.
 
@@ -63,7 +63,7 @@ The single-day sample run fixes:
 
 The multi-day framework additionally tests 50 milliseconds of latency and a second inventory adjustment size (2 ticks/share).
 
-At each event, equity is cash plus marked-to-mid inventory minus fees. The report includes total hypothetical fills, net/gross P&L, total fee drag, ending and maximum inventory, time-weighted absolute inventory, peak-to-trough marked drawdown, quote refresh counts and cancelled quotes.
+At each event, equity is cash plus marked-to-mid inventory minus fees. A separate optional terminal-liquidation estimate uses displayed best bid/ask quotes where sufficient size is visible, plus an additional illustrative 1-cent/share exit fee. The report includes total hypothetical fills, net/gross P&L, total fee drag, ending and maximum inventory, time-weighted absolute inventory, peak-to-trough marked drawdown, quote refresh counts and cancelled quotes.
 
 **This is a one-venue passive research simulation, not an execution-calibrated production trading system.** It omits queue order identities, hidden/iceberg liquidity, partial-fill priority within multiorder executions, order-cancel acknowledgement timing, dynamic spread selection, cross-venue routing, fees/rebates specific to venues and dates, and the feedback of an inserted order on future historical events.
 
